@@ -1,0 +1,26 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Setup Python or Node
+        uses: actions/setup-python@v2 # for Python or actions/setup-node@v2 # for Node
+        with:
+          python-version: '3.x' # for Python or node-version: '14.x' # for Node
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt # for Python or npm install # for Node
+      - name: Deploy to AWS
+        uses: aws-actions/aws-deploy@v1
+        with:
+          manifest-file: .aws-sam/build/manifest.yaml # for Python or template-file: template.yml # for Node
+          stack-name: hello-world-stack # choose any name you like
+          capabilities: CAPABILITY_IAM
